@@ -121,3 +121,4 @@ C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\bin\Debug\MelonLoader.xm
 C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\obj\Debug\RingSwapper.csproj.CopyComplete
 C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\obj\Debug\RingSwapper.dll
 C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\obj\Debug\RingSwapper.pdb
+C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\obj\Debug\RingSwapper.csproj.AssemblyReference.cache

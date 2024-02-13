@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using MelonLoader;
 using NostalgicRing; // The namespace of your mod class
 // ...
-[assembly: MelonInfo(typeof(main), "Ring Swapper", "1.2.0", "UlvakSkillz")]
+[assembly: MelonInfo(typeof(main), "Ring Swapper", "1.2.1", "UlvakSkillz")]
 [assembly: MelonGame("Buckethead Entertainment", "RUMBLE")]
 
 // General Information about an assembly is controlled through the following

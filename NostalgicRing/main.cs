@@ -16,9 +16,10 @@ namespace NostalgicRing
 		private bool gymInitRan = false;
 		private GameObject materialsGameObject;
 		private Material[] materials;
-        //RumbleBee is so Cool!
+		System.Random random = new System.Random();
+		//RumbleBee is so Cool!
 
-        public override void OnSceneWasLoaded(int buildIndex, string sceneName)
+		public override void OnSceneWasLoaded(int buildIndex, string sceneName)
 		{
 			currentScene = sceneName;
 			sceneChanged = true;
@@ -32,15 +33,22 @@ namespace NostalgicRing
 					ringTypes[0] = Int32.Parse(fileContents[0]);
 					ringTypes[1] = Int32.Parse(fileContents[1]);
 					ringTypes[2] = Int32.Parse(fileContents[2]);
+					//if random, set random
+					if (fileContents[3].ToString().ToLower() == "true")
+					{
+						ringTypes[0] = random.Next(0, 15);
+						ringTypes[1] = random.Next(0, 15);
+						ringTypes[2] = random.Next(0, 15);
+					}
 					//Clamp to 0 - 15
 					if ((ringType < 0) || (15 < ringType))
 					{
 						ringType = 0;
 					}
 				}
-				catch
+				catch (Exception e)
 				{
-					MelonLogger.Error($"Error Reading {settingsFile}");
+					MelonLogger.Error($"Error Reading {settingsFile}: {e}");
 				}
 			}
 			else
