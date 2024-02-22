@@ -11,7 +11,7 @@ namespace NostalgicRing
 		private string settingsFile = @"UserData\RingSwapper\Settings.txt";
 		private string currentScene = "";
 		private bool sceneChanged = false;
-		private int[] ringTypes;
+		private int[] ringTypes = new int[3];
 		private int ringType = 0;
 		private bool gymInitRan = false;
 		private GameObject materialsGameObject;
@@ -29,7 +29,6 @@ namespace NostalgicRing
 				try
 				{
 					string[] fileContents = System.IO.File.ReadAllLines(settingsFile);
-					ringTypes = new int[3];
 					ringTypes[0] = Int32.Parse(fileContents[0]);
 					ringTypes[1] = Int32.Parse(fileContents[1]);
 					ringTypes[2] = Int32.Parse(fileContents[2]);
@@ -75,18 +74,73 @@ namespace NostalgicRing
 							/*Leaves*/materials[3] = new Material(GameObject.Find("--------------SCENE--------------/Gym_Production/Main static group/Foliage/Root_leaves").GetComponent<MeshRenderer>().material);
 							/*Dirt*/materials[4] = new Material(GameObject.Find("--------------SCENE--------------/Gym_Production/Main static group/FloorMeshParent/Floormesh").GetComponent<MeshRenderer>().material);
 							/*Wood*/materials[5] = new Material(GameObject.Find("--------------SCENE--------------/Gym_Production/Sub static group(buildings)/Rumble_station/Wood/Bench/Woodset_large__1__1").GetComponent<MeshRenderer>().material);
-							/*ChargeStone*/materials[6] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: ChargeStone (RUMBLE.Combat.ShiftStones.ChargeStone)/ChargeStone").GetComponent<ChargeStone>().gemRenderer.material);
-							/*AdamantStone*/materials[7] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: AdamantStone (RUMBLE.Combat.ShiftStones.UnyieldingStone)/AdamantStone").GetComponent<UnyieldingStone>().gemRenderer.material);
-							/*GuardStone*/materials[8] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: GuardStone (RUMBLE.Combat.ShiftStones.GuardStone)/GuardStone").GetComponent<GuardStone>().gemRenderer.material);
-							/*VolatileStone*/materials[9] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: VolatileStone (RUMBLE.Combat.ShiftStones.VolatileStone)/VolatileStone").GetComponent<VolatileStone>().gemRenderer.material);
-							/*SurgeStone*/materials[10] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: SurgeStone (RUMBLE.Combat.ShiftStones.CounterStone)/SurgeStone").GetComponent<CounterStone>().gemRenderer.material);
+                            try
+                            {
+								/*ChargeStone*/materials[6] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: ChargeStone (RUMBLE.Combat.ShiftStones.ChargeStone)/ChargeStone").GetComponent<ChargeStone>().gemRenderer.material);
+                            }
+                            catch
+							{
+								/*ChargeStone Workaround*/
+								PlayerShiftStoneSystem playerShiftStoneSystem = GameObject.Find("Player Controller(Clone)/Shiftstones").GetComponent<PlayerShiftStoneSystem>();
+								materials[6] = new Material(playerShiftStoneSystem.GetEquippedShiftstones()[playerShiftStoneSystem.GetSocketIndex("Charge Stone")].gemRenderer.material);
+							}
+                            try
+                            {
+								/*AdamantStone*/materials[7] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: AdamantStone (RUMBLE.Combat.ShiftStones.UnyieldingStone)/AdamantStone").GetComponent<UnyieldingStone>().gemRenderer.material);
+                            }
+                            catch
+							{
+								/*AdamantStone Workaround*/
+								PlayerShiftStoneSystem playerShiftStoneSystem = GameObject.Find("Player Controller(Clone)/Shiftstones").GetComponent<PlayerShiftStoneSystem>();
+								materials[7] = new Material(playerShiftStoneSystem.GetEquippedShiftstones()[playerShiftStoneSystem.GetSocketIndex("Adamant Stone")].gemRenderer.material);
+							}
+                            try
+                            {
+								/*GuardStone*/materials[8] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: GuardStone (RUMBLE.Combat.ShiftStones.GuardStone)/GuardStone").GetComponent<GuardStone>().gemRenderer.material);
+                            }
+                            catch
+							{
+								/*GuardStone Workaround*/
+								PlayerShiftStoneSystem playerShiftStoneSystem = GameObject.Find("Player Controller(Clone)/Shiftstones").GetComponent<PlayerShiftStoneSystem>();
+								materials[8] = new Material(playerShiftStoneSystem.GetEquippedShiftstones()[playerShiftStoneSystem.GetSocketIndex("Guard Stone")].gemRenderer.material);
+							}
+							try
+							{
+								/*VolatileStone*/materials[9] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: VolatileStone (RUMBLE.Combat.ShiftStones.VolatileStone)/VolatileStone").GetComponent<VolatileStone>().gemRenderer.material);
+							}
+							catch
+							{
+								/*VolatileStone Workaround*/
+								PlayerShiftStoneSystem playerShiftStoneSystem = GameObject.Find("Player Controller(Clone)/Shiftstones").GetComponent<PlayerShiftStoneSystem>();
+								materials[9] = new Material(playerShiftStoneSystem.GetEquippedShiftstones()[playerShiftStoneSystem.GetSocketIndex("Volatile Stone")].gemRenderer.material);
+							}
+							try
+							{
+								/*SurgeStone*/materials[10] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: SurgeStone (RUMBLE.Combat.ShiftStones.CounterStone)/SurgeStone").GetComponent<CounterStone>().gemRenderer.material);
+							}
+							catch
+							{
+								/*SurgeStone Workaround*/
+								PlayerShiftStoneSystem playerShiftStoneSystem = GameObject.Find("Player Controller(Clone)/Shiftstones").GetComponent<PlayerShiftStoneSystem>();
+								materials[10] = new Material(playerShiftStoneSystem.GetEquippedShiftstones()[playerShiftStoneSystem.GetSocketIndex("Surge Stone")].gemRenderer.material);
+							}
 							/*LargeRock*/materials[11] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: LargeRock (RUMBLE.MoveSystem.Structure)/LargeRock").GetComponent<MeshRenderer>().material);
-							/*FlowStone*/materials[12] = new Material(GameObject.Find("--------------LOGIC--------------/Heinhouser products/ShiftstoneCabinet/Cabinet/ShiftstoneBox/FlowStone/Gem10 (1)").GetComponent<MeshRenderer>().material);
+							try
+							{
+								/*FlowStone*/materials[12] = new Material(GameObject.Find("--------------LOGIC--------------/Heinhouser products/ShiftstoneCabinet/Cabinet/ShiftstoneBox/FlowStone/Gem10 (1)").GetComponent<MeshRenderer>().material);
+							}
+							catch
+							{
+								/*FlowStone Workaround*/
+								PlayerShiftStoneSystem playerShiftStoneSystem = GameObject.Find("Player Controller(Clone)/Shiftstones").GetComponent<PlayerShiftStoneSystem>();
+								materials[11] = new Material(playerShiftStoneSystem.GetEquippedShiftstones()[playerShiftStoneSystem.GetSocketIndex("Flow Stone")].gemRenderer.material);
+							}
 							materialsGameObject = new GameObject();
 							materialsGameObject.AddComponent<MeshRenderer>();
 							materialsGameObject.GetComponent<MeshRenderer>().materials = materials;
 							GameObject.DontDestroyOnLoad(materialsGameObject);
 							gymInitRan = true;
+							MelonLogger.Msg("Initialized");
 						}
 					}
 					//switch rings on load

@@ -20,7 +20,6 @@ C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\bin\Debug\Mono.Cecil.Mdb
 C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\bin\Debug\Mono.Cecil.Rocks.dll
 C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\bin\Debug\UnityEngine.AnimationModule.dll
 C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\bin\Debug\Unity.XR.OpenXR.dll
-C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\bin\Debug\BucketheadEntertainment.Plugins.dll
 C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\bin\Debug\UnityEngine.PhysicsModule.dll
 C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\bin\Debug\PhotonRealtime.dll
 C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\bin\Debug\PhotonUnityNetworking.dll
@@ -121,4 +120,3 @@ C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\bin\Debug\MelonLoader.xm
 C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\obj\Debug\RingSwapper.csproj.CopyComplete
 C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\obj\Debug\RingSwapper.dll
 C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\obj\Debug\RingSwapper.pdb
-C:\Users\austi\source\repos\NostalgicRing\NostalgicRing\obj\Debug\RingSwapper.csproj.AssemblyReference.cache

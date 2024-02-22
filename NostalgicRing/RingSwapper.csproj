@@ -34,6 +34,7 @@
     <Reference Include="0Harmony">
       <HintPath>F:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\0Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="BucketheadEntertainment.Plugins, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="Il2Cppmscorlib">
       <HintPath>F:\SteamLibrary\steamapps\common\RUMBLE\MelonLoader\Managed\Il2Cppmscorlib.dll</HintPath>
     </Reference>
