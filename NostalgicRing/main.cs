@@ -1,6 +1,8 @@
 ﻿using MelonLoader;
 using RUMBLE.Combat.ShiftStones;
 using System;
+using System.Collections;
+using System.IO;
 using UnityEngine;
 
 namespace NostalgicRing
@@ -9,6 +11,8 @@ namespace NostalgicRing
 	{
 		//Variables
 		private string settingsFile = @"UserData\RingSwapper\Settings.txt";
+		private string FILEPATH = @"UserData\RingSwapper";
+		private string FILENAME = @"Settings.txt";
 		private string currentScene = "";
 		private bool sceneChanged = false;
 		private int[] ringTypes = new int[3];
@@ -17,43 +21,21 @@ namespace NostalgicRing
 		private GameObject materialsGameObject;
 		private Material[] materials;
 		System.Random random = new System.Random();
+		private bool newFile = false;
 		//RumbleBee is so Cool!
+
+		public override void OnLateInitializeMelon()
+		{
+			if (!File.Exists(settingsFile))
+			{
+				MelonCoroutines.Start(CheckIfFileExists(FILEPATH, FILENAME));
+			}
+		}
 
 		public override void OnSceneWasLoaded(int buildIndex, string sceneName)
 		{
 			currentScene = sceneName;
 			sceneChanged = true;
-			//Read Settings File
-			if (System.IO.File.Exists(settingsFile))
-			{
-				try
-				{
-					string[] fileContents = System.IO.File.ReadAllLines(settingsFile);
-					ringTypes[0] = Int32.Parse(fileContents[0]);
-					ringTypes[1] = Int32.Parse(fileContents[1]);
-					ringTypes[2] = Int32.Parse(fileContents[2]);
-					//if random, set random
-					if (fileContents[3].ToString().ToLower() == "true")
-					{
-						ringTypes[0] = random.Next(0, 15);
-						ringTypes[1] = random.Next(0, 15);
-						ringTypes[2] = random.Next(0, 15);
-					}
-					//Clamp to 0 - 15
-					if ((ringType < 0) || (15 < ringType))
-					{
-						ringType = 0;
-					}
-				}
-				catch (Exception e)
-				{
-					MelonLogger.Error($"Error Reading {settingsFile}: {e}");
-				}
-			}
-			else
-			{
-				MelonLogger.Error($"File not Found: {settingsFile}");
-			}
 		}
 
         public override void OnFixedUpdate()
@@ -62,6 +44,46 @@ namespace NostalgicRing
             {
                 try
 				{
+					//Read Settings File
+					if ((currentScene != "") && (currentScene != "Loader"))
+					{
+						try
+						{
+							string[] fileContents;
+							if (newFile)
+							{
+								fileContents = new string[4];
+								fileContents[0] = "14";
+								fileContents[1] = "7";
+								fileContents[2] = "13";
+								fileContents[3] = "False";
+								newFile = false;
+							}
+							else
+							{
+								fileContents = File.ReadAllLines(settingsFile);
+							}
+							ringTypes[0] = Int32.Parse(fileContents[0]);
+							ringTypes[1] = Int32.Parse(fileContents[1]);
+							ringTypes[2] = Int32.Parse(fileContents[2]);
+							//if random, set random
+							if (fileContents[3].ToString().ToLower() == "true")
+							{
+								ringTypes[0] = random.Next(0, 15);
+								ringTypes[1] = random.Next(0, 15);
+								ringTypes[2] = random.Next(0, 15);
+							}
+							//Clamp to 0 - 15
+							if ((ringType < 0) || (15 < ringType))
+							{
+								ringType = 0;
+							}
+						}
+						catch (Exception e)
+						{
+							MelonLogger.Error($"Error Reading {settingsFile}: {e}");
+						}
+					}
 					if (currentScene == "Gym")
 					{
 						//initialize
@@ -163,6 +185,53 @@ namespace NostalgicRing
 					return;
                 }
             }
+		}
+
+		public IEnumerator CheckIfFileExists(string filePath, string fileName)
+		{
+			if (!File.Exists($"{filePath}\\{fileName}"))
+			{
+				newFile = true;
+				if (!Directory.Exists(filePath))
+				{
+					MelonLogger.Msg($"Folder Not Found, Creating Folder: {filePath}");
+					Directory.CreateDirectory(filePath);
+				}
+				if (!File.Exists($"{filePath}\\{fileName}"))
+				{
+					MelonLogger.Msg($"Creating File {filePath}\\{fileName}");
+					File.Create($"{filePath}\\{fileName}");
+				}
+				string[] newFileText = new string[25];
+				newFileText[0] = "14";
+				newFileText[1] = "7";
+				newFileText[2] = "13";
+				newFileText[3] = "False";
+				newFileText[4] = "------------------------";
+				newFileText[5] = "Line 1: Park";
+				newFileText[6] = "Line 2: The Ring";
+				newFileText[7] = "Line 3: The Pit";
+				newFileText[8] = "Line 4: Choose Random?";
+				newFileText[9] = "0 = Default";
+				newFileText[10] = "1 = Dusty Metal";
+				newFileText[11] = "2 = Deep Metal";
+				newFileText[12] = "3 = Bright Metal";
+				newFileText[13] = "4 = Yin and Yang";
+				newFileText[14] = "5 = Rustic";
+				newFileText[15] = "6 = Plant Life";
+				newFileText[16] = "7 = Wooden";
+				newFileText[17] = "8 = RumbleBee";
+				newFileText[18] = "9 = Rumblekai";
+				newFileText[19] = "10 = UlvakSkillz";
+				newFileText[20] = "11 = Honey";
+				newFileText[21] = "12 = Christmas";
+				newFileText[22] = "13 = Rocky";
+				newFileText[23] = "14 = Spaceship";
+				newFileText[24] = "15 = Candy";
+				for (int i = 0; i < 1000; i++) { yield return new WaitForFixedUpdate(); }
+				File.WriteAllLines($"{filePath}\\{fileName}", newFileText);
+			}
+			yield return null;
 		}
 
 		private void SwitchRingType(GameObject objectToModify)
