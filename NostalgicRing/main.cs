@@ -1,19 +1,19 @@
 ﻿using MelonLoader;
-using RUMBLE.Combat.ShiftStones;
+using Il2CppRUMBLE.Combat.ShiftStones;
+using RumbleModUI;
 using System;
 using System.Collections;
 using System.IO;
 using UnityEngine;
+using RumbleModdingAPI;
+using Il2CppRUMBLE.Managers;
 
 namespace NostalgicRing
 {
     public class main : MelonMod
 	{
 		//Variables
-		private string settingsFile = @"UserData\RingSwapper\Settings.txt";
-		private string FILEPATH = @"UserData\RingSwapper";
-		private string FILENAME = @"Settings.txt";
-		private string currentScene = "";
+		private string currentScene = "Loader";
 		private bool sceneChanged = false;
 		private int[] ringTypes = new int[3];
 		private int ringType = 0;
@@ -21,15 +21,110 @@ namespace NostalgicRing
 		private GameObject materialsGameObject;
 		private Material[] materials;
 		System.Random random = new System.Random();
-		private bool newFile = false;
-		//RumbleBee is so Cool!
+		UI UI = UI.instance;
+		private Mod RingSwapper = new Mod();
+		private Material[] originalRing;
+		GameObject originalRingGameObject;
 
 		public override void OnLateInitializeMelon()
 		{
-			if (!File.Exists(settingsFile))
+			RingSwapper.ModName = "Ring Swapper";
+			RingSwapper.ModVersion = "2.0.4";
+			RingSwapper.SetFolder("RingSwapper");
+			RingSwapper.AddDescription("Description", "Description", "Changes the Rings in each Map", new Tags { IsSummary = true });
+			RingSwapper.AddToList("Park", 14, "0 = Default            | 1 = Dusty Metal" + Environment.NewLine + "2 = Deep Metal     | 3 = Bright Metal" + Environment.NewLine + "4 = Yin and Yang  | 5 = Rustic" + Environment.NewLine + "6 = Plant Life         | 7 = Wooden" + Environment.NewLine + "8 = RumbleBee     | 9 = Rumblekai" + Environment.NewLine + "10 = UlvakSkillz    | 11 = Honey" + Environment.NewLine + "12 = Christmas     | 13 = Rocky" + Environment.NewLine + "14 = Spaceship     | 15 = Candy", new Tags { });
+			RingSwapper.AddToList("Ring", 7, "0 = Default            | 1 = Dusty Metal" + Environment.NewLine + "2 = Deep Metal     | 3 = Bright Metal" + Environment.NewLine + "4 = Yin and Yang  | 5 = Rustic" + Environment.NewLine + "6 = Plant Life         | 7 = Wooden" + Environment.NewLine + "8 = RumbleBee     | 9 = Rumblekai" + Environment.NewLine + "10 = UlvakSkillz    | 11 = Honey" + Environment.NewLine + "12 = Christmas     | 13 = Rocky" + Environment.NewLine + "14 = Spaceship     | 15 = Candy", new Tags { });
+			RingSwapper.AddToList("Pit", 3, "0 = Default            | 1 = Dusty Metal" + Environment.NewLine + "2 = Deep Metal     | 3 = Bright Metal" + Environment.NewLine + "4 = Yin and Yang  | 5 = Rustic" + Environment.NewLine + "6 = Plant Life         | 7 = Wooden" + Environment.NewLine + "8 = RumbleBee     | 9 = Rumblekai" + Environment.NewLine + "10 = UlvakSkillz    | 11 = Honey" + Environment.NewLine + "12 = Christmas     | 13 = Rocky" + Environment.NewLine + "14 = Spaceship     | 15 = Candy", new Tags { });
+			RingSwapper.AddToList("Random", false, 0, "Changes Rings to Random Types", new Tags { });
+			RingSwapper.GetFromFile();
+			ringTypes[0] = (int)RingSwapper.Settings[1].Value;
+			ringTypes[1] = (int)RingSwapper.Settings[2].Value;
+			ringTypes[2] = (int)RingSwapper.Settings[3].Value;
+			RingSwapper.ModSaved += Save;
+			UI.instance.UI_Initialized += UIInit;
+			Calls.onMapInitialized += MapChange;
+		}
+
+		public void UIInit()
+		{
+			UI.AddMod(RingSwapper);
+		}
+
+		public void Save()
+		{
+			ringTypes[0] = (int)RingSwapper.Settings[1].Value;
+			ringTypes[1] = (int)RingSwapper.Settings[2].Value;
+			ringTypes[2] = (int)RingSwapper.Settings[3].Value;
+			if (currentScene == "Map0")
 			{
-				MelonCoroutines.Start(CheckIfFileExists(FILEPATH, FILENAME));
+				SwitchRingType(Calls.GameObjects.Map0.Map0Production.MainStaticGroup.RingBoarder.GetGameObject());
 			}
+			else if (currentScene == "Map1")
+			{
+				SwitchRingType(Calls.GameObjects.Map1.Map1Production.MainStaticGroup.RingClamp.GetGameObject());
+			}
+			else if (currentScene == "Park")
+			{
+				SwitchRingType(Calls.GameObjects.Park.Scene.Park.MainStaticGroup.Arenas.GymArena0.Arena.GetGameObject());
+			}
+		}
+
+		private void MapChange()
+		{
+			try
+			{
+				//Read Settings File
+				if (currentScene != "Loader")
+				{
+					ringTypes[0] = (int)RingSwapper.Settings[1].Value;
+					ringTypes[1] = (int)RingSwapper.Settings[2].Value;
+					ringTypes[2] = (int)RingSwapper.Settings[3].Value;
+					//if random, set random
+					if ((bool)RingSwapper.Settings[4].Value)
+					{
+						ringTypes[0] = random.Next(0, 15);
+						ringTypes[1] = random.Next(0, 15);
+						ringTypes[2] = random.Next(0, 15);
+					}
+					//Clamp to 0 - 15
+					if ((ringType < 0) || (15 < ringType))
+					{
+						ringType = 0;
+					}
+					MelonCoroutines.Start(WaitThenSwap());
+				}
+			}
+			catch { }
+		}
+
+		private IEnumerator WaitThenSwap()
+		{
+			//switch rings on load
+			if (currentScene == "Map0")
+			{
+				originalRing = new Material[Calls.GameObjects.Map0.Map0Production.MainStaticGroup.RingBoarder.GetGameObject().GetComponent<MeshRenderer>().materials.Count];
+				for (int i = 0; i < Calls.GameObjects.Map0.Map0Production.MainStaticGroup.RingBoarder.GetGameObject().GetComponent<MeshRenderer>().materials.Count; i++)
+				{
+					originalRing[i] = new Material(Calls.GameObjects.Map0.Map0Production.MainStaticGroup.RingBoarder.GetGameObject().GetComponent<MeshRenderer>().materials[i]);
+				}
+				SwitchRingType(Calls.GameObjects.Map0.Map0Production.MainStaticGroup.RingBoarder.GetGameObject());
+			}
+			else if (currentScene == "Map1")
+			{
+				originalRing = new Material[Calls.GameObjects.Map1.Map1Production.MainStaticGroup.RingClamp.GetGameObject().GetComponent<MeshRenderer>().materials.Count];
+				for (int i = 0; i < Calls.GameObjects.Map1.Map1Production.MainStaticGroup.RingClamp.GetGameObject().GetComponent<MeshRenderer>().materials.Count; i++)
+				{
+					originalRing[i] = new Material(Calls.GameObjects.Map1.Map1Production.MainStaticGroup.RingClamp.GetGameObject().GetComponent<MeshRenderer>().materials[i]);
+				}
+				SwitchRingType(Calls.GameObjects.Map1.Map1Production.MainStaticGroup.RingClamp.GetGameObject());
+			}
+			else if (currentScene == "Park")
+			{
+				yield return new WaitForFixedUpdate();
+				yield return new WaitForFixedUpdate();
+				SwitchRingType(Calls.GameObjects.Park.Scene.Park.MainStaticGroup.Arenas.GymArena0.Arena.GetGameObject());
+			}
+			yield break;
 		}
 
 		public override void OnSceneWasLoaded(int buildIndex, string sceneName)
@@ -41,197 +136,74 @@ namespace NostalgicRing
         public override void OnFixedUpdate()
         {
 			if (sceneChanged)
-            {
-                try
-				{
-					//Read Settings File
-					if ((currentScene != "") && (currentScene != "Loader"))
-					{
-						try
-						{
-							string[] fileContents;
-							if (newFile)
-							{
-								fileContents = new string[4];
-								fileContents[0] = "14";
-								fileContents[1] = "7";
-								fileContents[2] = "13";
-								fileContents[3] = "False";
-								newFile = false;
-							}
-							else
-							{
-								fileContents = File.ReadAllLines(settingsFile);
-							}
-							ringTypes[0] = Int32.Parse(fileContents[0]);
-							ringTypes[1] = Int32.Parse(fileContents[1]);
-							ringTypes[2] = Int32.Parse(fileContents[2]);
-							//if random, set random
-							if (fileContents[3].ToString().ToLower() == "true")
-							{
-								ringTypes[0] = random.Next(0, 15);
-								ringTypes[1] = random.Next(0, 15);
-								ringTypes[2] = random.Next(0, 15);
-							}
-							//Clamp to 0 - 15
-							if ((ringType < 0) || (15 < ringType))
-							{
-								ringType = 0;
-							}
-						}
-						catch (Exception e)
-						{
-							MelonLogger.Error($"Error Reading {settingsFile}: {e}");
-						}
-					}
-					if (currentScene == "Gym")
-					{
-						//initialize
-						if (!gymInitRan)
-						{
-							materials = new Material[13];
-							/*Suit*/materials[0] = new Material(GameObject.Find("Player Controller(Clone)/Visuals/Suit").GetComponent<SkinnedMeshRenderer>().material);
-							/*TreeRoot*/materials[1] = new Material(GameObject.Find("--------------SCENE--------------/Gym_Production/Sub static group(buildings)/Rumble_station/Root").GetComponent<MeshRenderer>().material);
-							/*SpawnRingFloor*/materials[2] = new Material(GameObject.Find("--------------SCENE--------------/Gym_Production/Main static group/Spawn_area/SpawnRingFloor").GetComponent<MeshRenderer>().material);
-							/*Leaves*/materials[3] = new Material(GameObject.Find("--------------SCENE--------------/Gym_Production/Main static group/Foliage/Root_leaves").GetComponent<MeshRenderer>().material);
-							/*Dirt*/materials[4] = new Material(GameObject.Find("--------------SCENE--------------/Gym_Production/Main static group/FloorMeshParent/Floormesh").GetComponent<MeshRenderer>().material);
-							/*Wood*/materials[5] = new Material(GameObject.Find("--------------SCENE--------------/Gym_Production/Sub static group(buildings)/Rumble_station/Wood/Bench/Woodset_large__1__1").GetComponent<MeshRenderer>().material);
-                            try
-                            {
-								/*ChargeStone*/materials[6] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: ChargeStone (RUMBLE.Combat.ShiftStones.ChargeStone)/ChargeStone").GetComponent<ChargeStone>().gemRenderer.material);
-                            }
-                            catch
-							{
-								/*ChargeStone Workaround*/
-								PlayerShiftStoneSystem playerShiftStoneSystem = GameObject.Find("Player Controller(Clone)/Shiftstones").GetComponent<PlayerShiftStoneSystem>();
-								materials[6] = new Material(playerShiftStoneSystem.GetEquippedShiftstones()[playerShiftStoneSystem.GetSocketIndex("Charge Stone")].gemRenderer.material);
-							}
-                            try
-                            {
-								/*AdamantStone*/materials[7] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: AdamantStone (RUMBLE.Combat.ShiftStones.UnyieldingStone)/AdamantStone").GetComponent<UnyieldingStone>().gemRenderer.material);
-                            }
-                            catch
-							{
-								/*AdamantStone Workaround*/
-								PlayerShiftStoneSystem playerShiftStoneSystem = GameObject.Find("Player Controller(Clone)/Shiftstones").GetComponent<PlayerShiftStoneSystem>();
-								materials[7] = new Material(playerShiftStoneSystem.GetEquippedShiftstones()[playerShiftStoneSystem.GetSocketIndex("Adamant Stone")].gemRenderer.material);
-							}
-                            try
-                            {
-								/*GuardStone*/materials[8] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: GuardStone (RUMBLE.Combat.ShiftStones.GuardStone)/GuardStone").GetComponent<GuardStone>().gemRenderer.material);
-                            }
-                            catch
-							{
-								/*GuardStone Workaround*/
-								PlayerShiftStoneSystem playerShiftStoneSystem = GameObject.Find("Player Controller(Clone)/Shiftstones").GetComponent<PlayerShiftStoneSystem>();
-								materials[8] = new Material(playerShiftStoneSystem.GetEquippedShiftstones()[playerShiftStoneSystem.GetSocketIndex("Guard Stone")].gemRenderer.material);
-							}
-							try
-							{
-								/*VolatileStone*/materials[9] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: VolatileStone (RUMBLE.Combat.ShiftStones.VolatileStone)/VolatileStone").GetComponent<VolatileStone>().gemRenderer.material);
-							}
-							catch
-							{
-								/*VolatileStone Workaround*/
-								PlayerShiftStoneSystem playerShiftStoneSystem = GameObject.Find("Player Controller(Clone)/Shiftstones").GetComponent<PlayerShiftStoneSystem>();
-								materials[9] = new Material(playerShiftStoneSystem.GetEquippedShiftstones()[playerShiftStoneSystem.GetSocketIndex("Volatile Stone")].gemRenderer.material);
-							}
-							try
-							{
-								/*SurgeStone*/materials[10] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: SurgeStone (RUMBLE.Combat.ShiftStones.CounterStone)/SurgeStone").GetComponent<CounterStone>().gemRenderer.material);
-							}
-							catch
-							{
-								/*SurgeStone Workaround*/
-								PlayerShiftStoneSystem playerShiftStoneSystem = GameObject.Find("Player Controller(Clone)/Shiftstones").GetComponent<PlayerShiftStoneSystem>();
-								materials[10] = new Material(playerShiftStoneSystem.GetEquippedShiftstones()[playerShiftStoneSystem.GetSocketIndex("Surge Stone")].gemRenderer.material);
-							}
-							/*LargeRock*/materials[11] = new Material(GameObject.Find("Game Instance/Pre-Initializable/PoolManager/Pool: LargeRock (RUMBLE.MoveSystem.Structure)/LargeRock").GetComponent<MeshRenderer>().material);
-							try
-							{
-								/*FlowStone*/materials[12] = new Material(GameObject.Find("--------------LOGIC--------------/Heinhouser products/ShiftstoneCabinet/Cabinet/ShiftstoneBox/FlowStone/Gem10 (1)").GetComponent<MeshRenderer>().material);
-							}
-							catch
-							{
-								/*FlowStone Workaround*/
-								PlayerShiftStoneSystem playerShiftStoneSystem = GameObject.Find("Player Controller(Clone)/Shiftstones").GetComponent<PlayerShiftStoneSystem>();
-								materials[11] = new Material(playerShiftStoneSystem.GetEquippedShiftstones()[playerShiftStoneSystem.GetSocketIndex("Flow Stone")].gemRenderer.material);
-							}
-							materialsGameObject = new GameObject();
-							materialsGameObject.AddComponent<MeshRenderer>();
-							materialsGameObject.GetComponent<MeshRenderer>().materials = materials;
-							GameObject.DontDestroyOnLoad(materialsGameObject);
-							gymInitRan = true;
-							MelonLogger.Msg("Initialized");
-						}
-					}
-					//switch rings on load
-					else if (currentScene == "Map0")
-					{
-						SwitchRingType(GameObject.Find("Map0_production/Main static group/Ring_boarder"));
-					}
-					else if (currentScene == "Map1")
-					{
-						SwitchRingType(GameObject.Find("Map1_production/Main static group/RingClamp"));
-					}
-					else if (currentScene == "Park")
-					{
-						SwitchRingType(GameObject.Find("________________SCENE_________________/Park/Main static group/Arenas/Gymarena/Arena"));
-					}
-					sceneChanged = false;
-				}
-                catch
-                {
-					return;
-                }
-            }
-		}
-
-		public IEnumerator CheckIfFileExists(string filePath, string fileName)
-		{
-			if (!File.Exists($"{filePath}\\{fileName}"))
 			{
-				newFile = true;
-				if (!Directory.Exists(filePath))
+				if (currentScene == "Gym")
 				{
-					MelonLogger.Msg($"Folder Not Found, Creating Folder: {filePath}");
-					Directory.CreateDirectory(filePath);
+					//initialize
+					if (!gymInitRan) { MelonCoroutines.Start(Init()); }
 				}
-				if (!File.Exists($"{filePath}\\{fileName}"))
+				else if (currentScene == "Park")
 				{
-					MelonLogger.Msg($"Creating File {filePath}\\{fileName}");
-					File.Create($"{filePath}\\{fileName}");
+					GameObject parkRing = GameObject.Find("________________SCENE_________________/Park/Main static group/Arenas/Gymarena/Arena");
+					originalRing = new Material[parkRing.GetComponent<MeshRenderer>().materials.Count];
+					for (int i = 0; i < parkRing.GetComponent<MeshRenderer>().materials.Count; i++)
+					{
+						originalRing[i] = new Material(parkRing.GetComponent<MeshRenderer>().materials[i]);
+					}
+					originalRingGameObject = new GameObject();
+					(originalRingGameObject.AddComponent<MeshRenderer>()).materials = originalRing;
+					originalRingGameObject.SetActive(false);
 				}
-				string[] newFileText = new string[25];
-				newFileText[0] = "14";
-				newFileText[1] = "7";
-				newFileText[2] = "13";
-				newFileText[3] = "False";
-				newFileText[4] = "------------------------";
-				newFileText[5] = "Line 1: Park";
-				newFileText[6] = "Line 2: The Ring";
-				newFileText[7] = "Line 3: The Pit";
-				newFileText[8] = "Line 4: Choose Random?";
-				newFileText[9] = "0 = Default";
-				newFileText[10] = "1 = Dusty Metal";
-				newFileText[11] = "2 = Deep Metal";
-				newFileText[12] = "3 = Bright Metal";
-				newFileText[13] = "4 = Yin and Yang";
-				newFileText[14] = "5 = Rustic";
-				newFileText[15] = "6 = Plant Life";
-				newFileText[16] = "7 = Wooden";
-				newFileText[17] = "8 = RumbleBee";
-				newFileText[18] = "9 = Rumblekai";
-				newFileText[19] = "10 = UlvakSkillz";
-				newFileText[20] = "11 = Honey";
-				newFileText[21] = "12 = Christmas";
-				newFileText[22] = "13 = Rocky";
-				newFileText[23] = "14 = Spaceship";
-				newFileText[24] = "15 = Candy";
-				for (int i = 0; i < 1000; i++) { yield return new WaitForFixedUpdate(); }
-				File.WriteAllLines($"{filePath}\\{fileName}", newFileText);
+				sceneChanged = false;
 			}
-			yield return null;
+        }
+
+        private IEnumerator Init()
+		{
+			while (!gymInitRan)
+			{
+				yield return new WaitForFixedUpdate();
+				try
+				{
+					materials = new Material[13];
+					/*Suit*/
+					materials[0] = new Material(PlayerManager.instance.localPlayer.Controller.gameObject.transform.GetChild(5).GetChild(2).gameObject.GetComponent<SkinnedMeshRenderer>().material);
+					/*TreeRoot*/
+					materials[1] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.SubStaticGroupBuildings.RumbleStation.Root.GetGameObject().GetComponent<MeshRenderer>().material);
+					/*SpawnRingFloor*/
+					materials[2] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.MainStaticGroup.SpawnArea.SpawnRingFloor.GetGameObject().GetComponent<MeshRenderer>().material);
+					/*Leaves*/
+					materials[3] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.MainStaticGroup.Foliage.RootLeaves000.GetGameObject().GetComponent<MeshRenderer>().material);
+					/*Dirt*/
+					materials[4] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.MainStaticGroup.FloorMeshParent.FloorMesh.GetGameObject().GetComponent<MeshRenderer>().material);
+					/*Wood*/
+					materials[5] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.SubStaticGroupBuildings.RumbleStation.Wood.Bench.WoodsetLarge.GetGameObject().GetComponent<MeshRenderer>().material);
+					/*ChargeStone*/
+					materials[6] = new Material(Calls.Pools.ShiftStones.GetPoolChargeStone().transform.GetChild(0).gameObject.GetComponent<ChargeStone>().gemRenderer.material);
+					/*AdamantStone*/
+					materials[7] = new Material(Calls.Pools.ShiftStones.GetPoolAdamantStone().transform.GetChild(0).gameObject.GetComponent<UnyieldingStone>().gemRenderer.material);
+					/*GuardStone*/
+					materials[8] = new Material(Calls.Pools.ShiftStones.GetPoolGuardStone().transform.GetChild(0).gameObject.GetComponent<GuardStone>().gemRenderer.material);
+					/*VolatileStone*/
+					materials[9] = new Material(Calls.Pools.ShiftStones.GetPoolVolatileStone().transform.GetChild(0).gameObject.GetComponent<VolatileStone>().gemRenderer.material);
+					/*SurgeStone*/
+					materials[10] = new Material(Calls.Pools.ShiftStones.GetPoolSurgeStone().transform.GetChild(0).gameObject.GetComponent<CounterStone>().gemRenderer.material);
+					/*Rocks*/
+					materials[11] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.SubStaticGroup.Rocks.FarGym.FarRocks0.GetGameObject().GetComponent<MeshRenderer>().material);
+					/*FlowStone*/
+					materials[12] = new Material(Calls.Pools.ShiftStones.GetPoolFlowStone().transform.GetChild(0).gameObject.GetComponent<FlowStone>().gemRenderer.material);
+
+					materialsGameObject = new GameObject();
+					materialsGameObject.name = "RingSwapper Materials";
+					materialsGameObject.AddComponent<MeshRenderer>();
+					materialsGameObject.GetComponent<MeshRenderer>().materials = materials;
+					GameObject.DontDestroyOnLoad(materialsGameObject);
+					gymInitRan = true;
+					Log("Initialized");
+				}
+				catch { }
+			}
+			yield break;
 		}
 
 		private void SwitchRingType(GameObject objectToModify)
@@ -252,8 +224,11 @@ namespace NostalgicRing
 						break;
 				}
 				//reskin dependent on ringType
+				objectToModify.GetComponent<MeshRenderer>().materials = originalRing;
 				switch (ringType)
 				{
+					case 0:
+						break;
 					case 1: //Dusty Metal
 						ReskinRing(objectToModify.GetComponent<MeshRenderer>(), materialsGameObject.GetComponent<MeshRenderer>().materials[1].shader, materialsGameObject.GetComponent<MeshRenderer>().materials[1].shader);
 						break;
@@ -305,6 +280,11 @@ namespace NostalgicRing
 			{
 				MelonLogger.Error(e);
 			}
+		}
+
+		public static void Log(string msg)
+		{
+			MelonLogger.Msg(msg);
 		}
 
 		private void CopyReskinRing(MeshRenderer meshRendererToBeReskinned, Material mat1, Material mat2)

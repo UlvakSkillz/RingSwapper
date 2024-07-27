@@ -1,10 +1,14 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using MelonLoader;
 using NostalgicRing; // The namespace of your mod class
 // ...
-[assembly: MelonInfo(typeof(main), "Ring Swapper", "1.3.1", "UlvakSkillz")]
+[assembly: MelonInfo(typeof(main), "Ring Swapper", "2.0.4", "UlvakSkillz")]
 [assembly: MelonGame("Buckethead Entertainment", "RUMBLE")]
+[assembly: MelonColor(255, 195, 0, 255)]
+[assembly: MelonAuthorColor(255, 195, 0, 255)]
+[assembly: VerifyLoaderVersion(0, 6, 2, true)]
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
