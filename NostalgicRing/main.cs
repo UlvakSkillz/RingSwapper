@@ -7,6 +7,8 @@ using System.IO;
 using UnityEngine;
 using RumbleModdingAPI;
 using Il2CppRUMBLE.Managers;
+using Il2CppRUMBLE.Combat.ShiftStones.UI;
+using static RumbleModdingAPI.Calls.GameObjects.Gym.Logic.HeinhouserProducts.ShiftstoneCabinet;
 
 namespace NostalgicRing
 {
@@ -29,7 +31,7 @@ namespace NostalgicRing
 		public override void OnLateInitializeMelon()
 		{
 			RingSwapper.ModName = "Ring Swapper";
-			RingSwapper.ModVersion = "2.0.4";
+			RingSwapper.ModVersion = "2.1.1";
 			RingSwapper.SetFolder("RingSwapper");
 			RingSwapper.AddDescription("Description", "Description", "Changes the Rings in each Map", new Tags { IsSummary = true });
 			RingSwapper.AddToList("Park", 14, "0 = Default            | 1 = Dusty Metal" + Environment.NewLine + "2 = Deep Metal     | 3 = Bright Metal" + Environment.NewLine + "4 = Yin and Yang  | 5 = Rustic" + Environment.NewLine + "6 = Plant Life         | 7 = Wooden" + Environment.NewLine + "8 = RumbleBee     | 9 = Rumblekai" + Environment.NewLine + "10 = UlvakSkillz    | 11 = Honey" + Environment.NewLine + "12 = Christmas     | 13 = Rocky" + Environment.NewLine + "14 = Spaceship     | 15 = Candy", new Tags { });
@@ -167,33 +169,33 @@ namespace NostalgicRing
 				{
 					materials = new Material[13];
 					/*Suit*/
-					materials[0] = new Material(PlayerManager.instance.localPlayer.Controller.gameObject.transform.GetChild(5).GetChild(2).gameObject.GetComponent<SkinnedMeshRenderer>().material);
-					/*TreeRoot*/
-					materials[1] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.SubStaticGroupBuildings.RumbleStation.Root.GetGameObject().GetComponent<MeshRenderer>().material);
-					/*SpawnRingFloor*/
-					materials[2] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.MainStaticGroup.SpawnArea.SpawnRingFloor.GetGameObject().GetComponent<MeshRenderer>().material);
-					/*Leaves*/
-					materials[3] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.MainStaticGroup.Foliage.RootLeaves000.GetGameObject().GetComponent<MeshRenderer>().material);
-					/*Dirt*/
-					materials[4] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.MainStaticGroup.FloorMeshParent.FloorMesh.GetGameObject().GetComponent<MeshRenderer>().material);
-					/*Wood*/
-					materials[5] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.SubStaticGroupBuildings.RumbleStation.Wood.Bench.WoodsetLarge.GetGameObject().GetComponent<MeshRenderer>().material);
-					/*ChargeStone*/
-					materials[6] = new Material(Calls.Pools.ShiftStones.GetPoolChargeStone().transform.GetChild(0).gameObject.GetComponent<ChargeStone>().gemRenderer.material);
-					/*AdamantStone*/
-					materials[7] = new Material(Calls.Pools.ShiftStones.GetPoolAdamantStone().transform.GetChild(0).gameObject.GetComponent<UnyieldingStone>().gemRenderer.material);
-					/*GuardStone*/
-					materials[8] = new Material(Calls.Pools.ShiftStones.GetPoolGuardStone().transform.GetChild(0).gameObject.GetComponent<GuardStone>().gemRenderer.material);
-					/*VolatileStone*/
-					materials[9] = new Material(Calls.Pools.ShiftStones.GetPoolVolatileStone().transform.GetChild(0).gameObject.GetComponent<VolatileStone>().gemRenderer.material);
-					/*SurgeStone*/
-					materials[10] = new Material(Calls.Pools.ShiftStones.GetPoolSurgeStone().transform.GetChild(0).gameObject.GetComponent<CounterStone>().gemRenderer.material);
-					/*Rocks*/
-					materials[11] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.SubStaticGroup.Rocks.FarGym.FarRocks0.GetGameObject().GetComponent<MeshRenderer>().material);
-					/*FlowStone*/
-					materials[12] = new Material(Calls.Pools.ShiftStones.GetPoolFlowStone().transform.GetChild(0).gameObject.GetComponent<FlowStone>().gemRenderer.material);
+					materials[0] = new Material(PlayerManager.instance.localPlayer.Controller.gameObject.transform.GetChild(0).GetChild(0).gameObject.GetComponent<SkinnedMeshRenderer>().material);
+                    /*TreeRoot*/
+                    materials[1] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.SubStaticGroupBuildings.RumbleStation.Root.GetGameObject().GetComponent<MeshRenderer>().material);
+                    /*SpawnRingFloor*/
+                    materials[2] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.MainStaticGroup.SpawnArea.SpawnRingFloor.GetGameObject().GetComponent<MeshRenderer>().material);
+                    /*Leaves*/
+                    materials[3] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.MainStaticGroup.Foliage.RootLeaves000.GetGameObject().GetComponent<MeshRenderer>().material);
+                    /*Dirt*/
+                    materials[4] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.MainStaticGroup.FloorMeshParent.FloorMesh.GetGameObject().GetComponent<MeshRenderer>().material);
+                    /*Wood*/
+                    materials[5] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.SubStaticGroupBuildings.RumbleStation.Wood.Bench.WoodsetLarge.GetGameObject().GetComponent<MeshRenderer>().material);
+                    /*ChargeStone*/
+                    materials[6] = new Material(Cabinet.ShiftstoneBox01.ChargeStone.GetGameObject().GetComponent<ChargeStone>().gemRenderer.material);
+                    /*AdamantStone*/
+                    materials[7] = new Material(Cabinet.ShiftstoneBox00.AdamantStone.GetGameObject().GetComponent<UnyieldingStone>().gemRenderer.material);
+                    /*GuardStone*/
+                    materials[8] = new Material(Cabinet.ShiftstoneBox03.GuardStone.GetGameObject().GetComponent<GuardStone>().gemRenderer.material);
+                    /*VolatileStone*/
+                    materials[9] = new Material(Cabinet.ShiftstoneBox07.VolatileStone.GetGameObject().GetComponent<VolatileStone>().gemRenderer.material);
+                    /*SurgeStone*/
+                    materials[10] = new Material(Cabinet.ShiftstoneBox05.SurgeStone.GetGameObject().GetComponent<CounterStone>().gemRenderer.material);
+                    /*Rocks*/
+                    materials[11] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.SubStaticGroup.Rocks.FarGym.FarRocks0.GetGameObject().GetComponent<MeshRenderer>().material);
+                    /*FlowStone*/
+                    materials[12] = new Material(Cabinet.ShiftstoneBox02.FlowStone.GetGameObject().GetComponent<FlowStone>().gemRenderer.material);
 
-					materialsGameObject = new GameObject();
+                    materialsGameObject = new GameObject();
 					materialsGameObject.name = "RingSwapper Materials";
 					materialsGameObject.AddComponent<MeshRenderer>();
 					materialsGameObject.GetComponent<MeshRenderer>().materials = materials;
@@ -222,10 +224,10 @@ namespace NostalgicRing
 					case "Map1":
 						ringType = ringTypes[2];
 						break;
-				}
-				//reskin dependent on ringType
-				objectToModify.GetComponent<MeshRenderer>().materials = originalRing;
-				switch (ringType)
+                }
+                //reskin dependent on ringType
+                objectToModify.GetComponent<MeshRenderer>().materials = originalRing;
+                switch (ringType)
 				{
 					case 0:
 						break;
@@ -274,8 +276,8 @@ namespace NostalgicRing
 					case 15: //Candy
 						ReskinRing(objectToModify.GetComponent<MeshRenderer>(), materialsGameObject.GetComponent<MeshRenderer>().materials[9], materialsGameObject.GetComponent<MeshRenderer>().materials[12]);
 						break;
-				}
-			}
+                }
+            }
 			catch (Exception e)
 			{
 				MelonLogger.Error(e);

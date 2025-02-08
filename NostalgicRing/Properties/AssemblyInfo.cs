@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using MelonLoader;
 using NostalgicRing; // The namespace of your mod class
 // ...
-[assembly: MelonInfo(typeof(main), "Ring Swapper", "2.0.4", "UlvakSkillz")]
+[assembly: MelonInfo(typeof(main), "Ring Swapper", "2.1.1", "UlvakSkillz")]
 [assembly: MelonGame("Buckethead Entertainment", "RUMBLE")]
 [assembly: MelonColor(255, 195, 0, 255)]
 [assembly: MelonAuthorColor(255, 195, 0, 255)]
