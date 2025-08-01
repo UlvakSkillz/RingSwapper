@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\austi\\source\\repos\\NostalgicRing\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{2FA22153-4207-4920-B248-5FD3DB5F3F12}|NostalgicRing\\RingSwapper.csproj|c:\\users\\austi\\source\\repos\\nostalgicring\\nostalgicring\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2FA22153-4207-4920-B248-5FD3DB5F3F12}|NostalgicRing\\RingSwapper.csproj|solutionrelative:nostalgicring\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2FA22153-4207-4920-B248-5FD3DB5F3F12}|NostalgicRing\\RingSwapper.csproj|c:\\users\\austi\\source\\repos\\nostalgicring\\nostalgicring\\properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2FA22153-4207-4920-B248-5FD3DB5F3F12}|NostalgicRing\\RingSwapper.csproj|solutionrelative:nostalgicring\\properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2FA22153-4207-4920-B248-5FD3DB5F3F12}|NostalgicRing\\RingSwapper.csproj|C:\\Users\\austi\\source\\repos\\NostalgicRing\\nostalgicring\\properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2FA22153-4207-4920-B248-5FD3DB5F3F12}|NostalgicRing\\RingSwapper.csproj|solutionrelative:nostalgicring\\properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{2FA22153-4207-4920-B248-5FD3DB5F3F12}|NostalgicRing\\RingSwapper.csproj|C:\\Users\\austi\\source\\repos\\NostalgicRing\\nostalgicring\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2FA22153-4207-4920-B248-5FD3DB5F3F12}|NostalgicRing\\RingSwapper.csproj|solutionrelative:nostalgicring\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,32 +18,32 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "AssemblyInfo.cs",
               "DocumentMoniker": "C:\\Users\\austi\\source\\repos\\NostalgicRing\\NostalgicRing\\Properties\\AssemblyInfo.cs",
               "RelativeDocumentMoniker": "NostalgicRing\\Properties\\AssemblyInfo.cs",
               "ToolTip": "C:\\Users\\austi\\source\\repos\\NostalgicRing\\NostalgicRing\\Properties\\AssemblyInfo.cs",
               "RelativeToolTip": "NostalgicRing\\Properties\\AssemblyInfo.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAA5AAAA",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-24T20:17:16.902Z"
+              "WhenOpened": "2024-12-24T20:17:16.902Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "main.cs",
               "DocumentMoniker": "C:\\Users\\austi\\source\\repos\\NostalgicRing\\NostalgicRing\\main.cs",
               "RelativeDocumentMoniker": "NostalgicRing\\main.cs",
               "ToolTip": "C:\\Users\\austi\\source\\repos\\NostalgicRing\\NostalgicRing\\main.cs",
               "RelativeToolTip": "NostalgicRing\\main.cs",
-              "ViewState": "AQIAAHoBAAAAAAAAAAAiwJkBAAArAAAA",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-24T19:33:26.045Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-24T19:33:26.045Z"
             }
           ]
         }

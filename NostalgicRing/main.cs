@@ -31,7 +31,7 @@ namespace NostalgicRing
 		public override void OnLateInitializeMelon()
 		{
 			RingSwapper.ModName = "Ring Swapper";
-			RingSwapper.ModVersion = "2.1.1";
+			RingSwapper.ModVersion = "2.2.1";
 			RingSwapper.SetFolder("RingSwapper");
 			RingSwapper.AddDescription("Description", "Description", "Changes the Rings in each Map", new Tags { IsSummary = true });
 			RingSwapper.AddToList("Park", 14, "0 = Default            | 1 = Dusty Metal" + Environment.NewLine + "2 = Deep Metal     | 3 = Bright Metal" + Environment.NewLine + "4 = Yin and Yang  | 5 = Rustic" + Environment.NewLine + "6 = Plant Life         | 7 = Wooden" + Environment.NewLine + "8 = RumbleBee     | 9 = Rumblekai" + Environment.NewLine + "10 = UlvakSkillz    | 11 = Honey" + Environment.NewLine + "12 = Christmas     | 13 = Rocky" + Environment.NewLine + "14 = Spaceship     | 15 = Candy", new Tags { });
@@ -168,8 +168,8 @@ namespace NostalgicRing
 				try
 				{
 					materials = new Material[13];
-					/*Suit*/
-					materials[0] = new Material(PlayerManager.instance.localPlayer.Controller.gameObject.transform.GetChild(0).GetChild(0).gameObject.GetComponent<SkinnedMeshRenderer>().material);
+                    /*Suit*/
+                    materials[0] = new Material(PlayerManager.instance.localPlayer.Controller.gameObject.transform.GetChild(1).GetChild(0).gameObject.GetComponent<SkinnedMeshRenderer>().material);
                     /*TreeRoot*/
                     materials[1] = new Material(Calls.GameObjects.Gym.Scene.GymProduction.SubStaticGroupBuildings.RumbleStation.Root.GetGameObject().GetComponent<MeshRenderer>().material);
                     /*SpawnRingFloor*/
@@ -203,7 +203,7 @@ namespace NostalgicRing
 					gymInitRan = true;
 					Log("Initialized");
 				}
-				catch { }
+				catch (Exception e){ MelonLogger.Error(e); }
 			}
 			yield break;
 		}
@@ -225,7 +225,7 @@ namespace NostalgicRing
 						ringType = ringTypes[2];
 						break;
                 }
-                //reskin dependent on ringType
+				//reskin dependent on ringType
                 objectToModify.GetComponent<MeshRenderer>().materials = originalRing;
                 switch (ringType)
 				{
@@ -250,7 +250,7 @@ namespace NostalgicRing
 						ReskinRing(objectToModify.GetComponent<MeshRenderer>(), materialsGameObject.GetComponent<MeshRenderer>().materials[4], materialsGameObject.GetComponent<MeshRenderer>().materials[3]);
 						break;
 					case 7: //Wooden
-						ReskinRing(objectToModify.GetComponent<MeshRenderer>(), materialsGameObject.GetComponent<MeshRenderer>().materials[5], materialsGameObject.GetComponent<MeshRenderer>().materials[5]);
+                        ReskinRing(objectToModify.GetComponent<MeshRenderer>(), materialsGameObject.GetComponent<MeshRenderer>().materials[5], materialsGameObject.GetComponent<MeshRenderer>().materials[5]);
 						break;
 					case 8: //RumbleBee
 						ReskinRing(objectToModify.GetComponent<MeshRenderer>(), materialsGameObject.GetComponent<MeshRenderer>().materials[2].shader, materialsGameObject.GetComponent<MeshRenderer>().materials[6]);
